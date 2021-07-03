@@ -38,7 +38,8 @@ public class MyApp
         });
         
         try {
-            // Create a Java built-in HTTP server instance, listen on port 8989 and connect it to the app instance
+            // Create a Java built-in HTTP server instance,
+            // listen on port 8989 and connect it to the app instance
             HttpServer httpServer = HttpServer.create(new InetSocketAddress(MyApp.APP_PORT), 0);
 
             JavaHttpServerBridge.attach(httpServer, app);

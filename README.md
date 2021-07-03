@@ -10,18 +10,18 @@ built-in HTTP server.
 ```java
 public class MyApp
 {
+    final private static int APP_PORT = 8989;
+    
     public static void main(String[] args)
     {
-        int port = 8989;
-
         // Create a dependency container instance
         Container container = new Container();
 
         // Create a response factory instance
         ResponseFactoryInterface responseFactory = new ResponseFactory();
         
-        // Instantiate the app running on port 8989
-        App app = new App(container, port);
+        // Instantiate the app
+        App app = new App(container);
 
         // Add default routing middleware to route incoming requests
         app.addDefaultRoutingMiddleware();
@@ -36,9 +36,10 @@ public class MyApp
 
             return response;
         });
-
+        
         try {
-            HttpServer httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+            // Create a Java built-in HTTP server instance, listen on port 8989 and connect it to the app instance
+            HttpServer httpServer = HttpServer.create(new InetSocketAddress(MyApp.APP_PORT), 0);
 
             JavaHttpServerBridge.attach(httpServer, app);
 

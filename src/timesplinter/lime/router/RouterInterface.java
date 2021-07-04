@@ -2,7 +2,7 @@ package timesplinter.lime.router;
 
 public interface RouterInterface
 {
-    Route match(
+    CompiledRouteInterface match(
             String requestMethod,
             String requestPath
     ) throws NotFoundRoutingException, MethodNotAllowedRoutingException;

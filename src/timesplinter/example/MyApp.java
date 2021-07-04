@@ -16,10 +16,10 @@ import java.time.format.DateTimeFormatter;
 
 public class MyApp
 {
+    final private static int APP_PORT = 8989;
+
     public static void main(String[] args)
     {
-        int port = 8989;
-
         Container container = new Container();
         container.set("foo", c -> "bar");
         container.set("baz", c -> {
@@ -38,10 +38,10 @@ public class MyApp
 
         var lazyRequestHandlerFactory = new LazyRequestHandlerFactory(container);
         
-        App app = new App(container, port);
+        App app = new App(container);
 
         app.addDefaultRoutingMiddleware();
-        app.addMiddleware((request, next) -> {
+        app.add((request, next) -> {
             System.out.println(request.getMethod() + " " + request.getPath());
 
             System.gc();
@@ -67,8 +67,23 @@ public class MyApp
 
         app.get("/foo/{param1}/baz", lazyRequestHandlerFactory.create(TestController.class.getName()));
 
+        app.group("/group", routeCollector -> {
+            routeCollector.get("/works", request -> {
+                var response = responseFactory.create();
+
+                response.setStatusCode(200).setHeader("Content-Type", "text/plain");
+                response.getBody().write("The group stuff works!");
+
+                return response;
+            });
+        }).add((request, next) -> {
+            System.out.println("This is a middleware that applies to this group only");
+
+            return next.handle(request);
+        });
+
         try {
-            HttpServer httpServer = HttpServer.create(new InetSocketAddress(port), 0);
+            HttpServer httpServer = HttpServer.create(new InetSocketAddress(MyApp.APP_PORT), 0);
 
             JavaHttpServerBridge.attach(httpServer, app);
 

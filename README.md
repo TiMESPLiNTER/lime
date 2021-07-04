@@ -66,3 +66,38 @@ This is the response for id: 42
 ## Middleware support
 
 ## Dependency injection container
+
+## Routing
+### Placeholders
+```java
+// Match any value (without "/")
+app.get("/test/{id}", request -> { /* ... */ });
+
+// Match only numbers
+app.get("/test/{id:\\d+}", request -> { /* ... */ });
+
+// Match only something that starts with "foo"
+app.get("/test/{id: foo.+}", request -> { /* ... */ })
+```
+
+Route matching is case-insensitive.
+
+### Groups
+```java
+// Match any value (without "/")
+app.group("/user", routeCollector -> {
+    routeCollector.get("", request -> { /* ... */ });
+    routeCollector.post("", request -> { /* ... */ });
+    routeCollector.get("{id: \\d+}", request -> { /* ... */ });
+}).add(new MyMiddleware());
+```
+
+This defines three routes:
+
+* `GET /user`
+* `POST /user`
+* `GET /user/42`
+
+and adds `MyMiddleware` to all three of them.
+
+As you can see, groups can also have middlewares appended which only affect that very group.

@@ -23,13 +23,13 @@ public class RoutingMiddleware implements MiddlewareInterface
     public ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws IOException
     {
         try {
-            Route route = this.router.match(request.getMethod(), request.getPath());
+            CompiledRouteInterface route = this.router.match(request.getMethod(), request.getPath());
 
             this.addRequestParametersFromRoute(request, route);
 
             request.setAttribute(RouteContext.ROUTE, route);
-            
-            return next.handle(request);
+
+            return route.getMiddlewareDispatcher(next).handle(request);
         } catch (NotFoundRoutingException|MethodNotAllowedRoutingException e) {
             ResponseInterface response = this.responseFactory.create();
             response.setStatusCode(e instanceof NotFoundRoutingException ? 404 : 405);
@@ -38,16 +38,16 @@ public class RoutingMiddleware implements MiddlewareInterface
         }
     }
 
-    private void addRequestParametersFromRoute(RequestInterface request, Route route)
+    private void addRequestParametersFromRoute(RequestInterface request, CompiledRouteInterface route)
     {
-        Matcher matcher = route.getPattern().matcher(request.getPath());
+        Matcher matcher = route.getCompiledPattern().matcher(request.getPath());
 
         if (!matcher.find()) {
             return;
         }
 
         for (int i = 0; i < matcher.groupCount(); i++) {
-            request.setAttribute(route.getParamNames()[i], matcher.group(i+1));
+            request.setAttribute(route.getParameterNames()[i], matcher.group(i+1));
         }
     }
 }

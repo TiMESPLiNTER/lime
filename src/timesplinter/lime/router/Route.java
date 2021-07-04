@@ -1,44 +1,62 @@
 package timesplinter.lime.router;
 
-import java.util.regex.Pattern;
+import java.util.List;
 
-final public class Route
+final public class Route implements RouteInterface
 {
-    final private String method;
+    final private String[] methods;
 
-    final private String path;
-
-    final private Pattern pattern;
-
-    final private String[] paramNames;
+    final private String pattern;
 
     final private RequestHandlerInterface handler;
 
-    public Route(String method, String path, Pattern pattern, String[] paramNames, RequestHandlerInterface handler) {
-        this.method = method;
-        this.path = path;
+    final private List<RouteGroupInterface> groups;
+
+    final private String identifier;
+
+    public Route(
+        String[] methods,
+        String pattern,
+        RequestHandlerInterface handler,
+        List<RouteGroupInterface> groups,
+        int identifier
+    ) {
+        this.methods = methods;
         this.handler = handler;
         this.pattern = pattern;
-        this.paramNames = paramNames;
+        this.groups = groups;
+        this.identifier = "route" + identifier;
     }
 
-    public String getMethod() {
-        return method;
+    public String[] getMethods()
+    {
+        return this.methods;
     }
 
-    public String getPath() {
-        return path;
+    @Override
+    public String getName()
+    {
+        return null;
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    @Override
+    public String getIdentifier()
+    {
+        return this.identifier;
     }
 
-    public RequestHandlerInterface getHandler() {
+    public String getPattern()
+    {
+        return this.pattern;
+    }
+
+    public List<RouteGroupInterface> getGroups()
+    {
+        return this.groups;
+    }
+
+    public RequestHandlerInterface getHandler()
+    {
         return handler;
-    }
-    
-    public String[] getParamNames() {
-        return this.paramNames;
     }
 }

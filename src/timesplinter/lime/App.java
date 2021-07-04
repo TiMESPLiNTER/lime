@@ -8,23 +8,19 @@ import timesplinter.lime.middleware.MiddlewareInterface;
 import timesplinter.lime.middleware.MiddlewareDispatcher;
 import timesplinter.lime.middleware.RoutingMiddleware;
 import timesplinter.lime.router.*;
-import com.sun.net.httpserver.HttpServer;
 
 import java.io.*;
-import java.net.InetSocketAddress;
 
-public class App {
-    final private int port;
-
-    final private Router router;
+public class App implements RequestHandlerInterface, RouteCollectorProxyInterface
+{
+    final private RouteCollectorProxyInterface routeCollectorProxy;
 
     final private MiddlewareDispatcher middlewareStack;
 
-    public App(Container container, int port)
+    public App(Container container)
     {
         this.middlewareStack = new MiddlewareDispatcher();
-        this.port = port;
-        this.router = new Router();
+        this.routeCollectorProxy = new RouteCollectorProxy();
     }
 
     public ResponseInterface handle(RequestInterface request) throws IOException
@@ -32,52 +28,93 @@ public class App {
         return this.middlewareStack.handle(request);
     }
 
-    public App addMiddleware(MiddlewareInterface middlewareInterface)
+    public App add(MiddlewareInterface middleware)
     {
-        this.middlewareStack.add(middlewareInterface);
+        this.middlewareStack.add(middleware);
 
+        return this;
+    }
+    
+    public App addMiddleware(MiddlewareInterface middleware)
+    {
+        this.add(middleware);
+        
         return this;
     }
     
     public App addDefaultRoutingMiddleware()
     {
-        this.addMiddleware(new RoutingMiddleware(this.router, new ResponseFactory()));
+        this.add(new RoutingMiddleware(new Router(this.getRouteCollector()), new ResponseFactory()));
         
         return this;
     }
 
-    public App add(String method, String path, RequestHandlerInterface handler)
+    @Override
+    public RouteInterface map(String[] methods, String path, RequestHandlerInterface handler)
     {
-        this.router.add(method, path, handler);
-
-        return this;
+        return this.routeCollectorProxy.map(methods, path, handler);
     }
 
-    public App get(String path, RequestHandlerInterface handler)
+    @Override
+    public RouteCollectorInterface getRouteCollector()
     {
-        this.router.add("GET", path, handler);
-
-        return this;
+        return this.routeCollectorProxy.getRouteCollector();
     }
 
-    public App post(String path, RequestHandlerInterface handler)
+    @Override
+    public String getBasePath()
     {
-        this.router.add("POST", path, handler);
-
-        return this;
+        return this.routeCollectorProxy.getBasePath();
     }
 
-    public App patch(String path, RequestHandlerInterface handler)
+    @Override
+    public RouteCollectorProxyInterface setBasePath(String basePath)
     {
-        this.router.add("PATCH", path, handler);
-
-        return this;
+        return this.routeCollectorProxy.setBasePath(basePath);
     }
 
-    public App delete(String path, RequestHandlerInterface handler)
+    @Override
+    public RouteInterface get(String path, RequestHandlerInterface handler)
     {
-        this.router.add("DELETE", path, handler);
+        return this.routeCollectorProxy.get(path, handler);
+    }
 
-        return this;
+    @Override
+    public RouteInterface post(String path, RequestHandlerInterface handler)
+    {
+        return this.routeCollectorProxy.post(path, handler);
+    }
+
+    @Override
+    public RouteInterface put(String pattern, RequestHandlerInterface handler)
+    {
+        return this.routeCollectorProxy.put(pattern, handler);
+    }
+
+    public RouteInterface patch(String path, RequestHandlerInterface handler)
+    {
+        return this.routeCollectorProxy.patch(path, handler);
+    }
+
+    public RouteInterface delete(String path, RequestHandlerInterface handler)
+    {
+        return this.routeCollectorProxy.delete(path, handler);
+    }
+
+    @Override
+    public RouteInterface options(String pattern, RequestHandlerInterface handler)
+    {
+        return this.routeCollectorProxy.options(pattern, handler);
+    }
+
+    @Override
+    public RouteInterface any(String pattern, RequestHandlerInterface handler) 
+    {
+        return this.routeCollectorProxy.any(pattern, handler);
+    }
+
+    public RouteGroupInterface group(String path, RouteGroupCallableInterface group)
+    {
+        return this.routeCollectorProxy.group(path, group);
     }
 }

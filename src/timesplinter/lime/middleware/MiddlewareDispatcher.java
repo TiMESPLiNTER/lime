@@ -2,23 +2,28 @@ package timesplinter.lime.middleware;
 
 import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseInterface;
+import timesplinter.lime.router.CompiledRouteInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
-import timesplinter.lime.router.Route;
 import timesplinter.lime.router.RouteContext;
 
 import java.io.IOException;
 
-public class MiddlewareDispatcher
+public class MiddlewareDispatcher implements RequestHandlerInterface
 {
     private RequestHandlerInterface tip;
 
     public MiddlewareDispatcher()
     {
-        this.tip = request -> {
-            Route route = (Route) request.getAttribute(RouteContext.ROUTE);
+        this(request -> {
+            CompiledRouteInterface route = (CompiledRouteInterface) request.getAttribute(RouteContext.ROUTE);
 
-            return route.getHandler().handle(request);
-        };
+            return route.getRouteDefinition().getHandler().handle(request);
+        });
+    }
+    
+    public MiddlewareDispatcher(RequestHandlerInterface kernel)
+    {
+        this.tip = kernel;
     }
 
     public void add(MiddlewareInterface middleware)

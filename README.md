@@ -84,7 +84,6 @@ Route matching is case-insensitive.
 
 ### Groups
 ```java
-// Match any value (without "/")
 app.group("/user", routeCollector -> {
     routeCollector.get("", request -> { /* ... */ });
     routeCollector.post("", request -> { /* ... */ });

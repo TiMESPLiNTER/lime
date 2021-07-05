@@ -68,6 +68,30 @@ This is the response for id: 42
 
 ## Dependency injection container
 
+The dependency injection container allows you to define services lazily. This means they're only instantiated if and 
+when they're used for the first time during runtime.
+
+### Example
+```java
+var container = new Container();
+
+// Service definition
+container.set("myService", () -> {
+    String pattern = "yyyy-MM-dd";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+    return simpleDateFormat.format(new Date());
+});
+
+// Service retrieval
+var myService = (String) container.get("myService");
+```
+
+### Pre-compiling
+There's also the option to precompile the container with the method `Container::precompile` and instantiate all services
+at once instead of on the fly with their first usage. This might be useful if you anyway know that all defined services 
+will be used at some point during a long-running process.
+
 ## Routing
 ### Placeholders
 ```java

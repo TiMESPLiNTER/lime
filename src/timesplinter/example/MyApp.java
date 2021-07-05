@@ -1,6 +1,8 @@
 package timesplinter.example;
 
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
 import timesplinter.example.controller.TestController;
 import timesplinter.example.serviceProvider.ControllerServiceProvider;
 import timesplinter.example.serviceProvider.HttpServiceProvider;
@@ -10,8 +12,16 @@ import timesplinter.lime.bridge.JavaHttpServerBridge;
 import timesplinter.lime.container.Container;
 import timesplinter.lime.http.ResponseFactoryInterface;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 
 public class MyApp
 {
@@ -33,7 +43,7 @@ public class MyApp
 
         app.addDefaultRoutingMiddleware();
         app.add((request, next) -> {
-            System.out.println(request.getMethod() + " " + request.getPath());
+            System.out.println(request.getMethod() + " " + request.getUri().getPath());
 
             System.gc();
 
@@ -74,6 +84,10 @@ public class MyApp
         });
 
         try {
+            //var context = MyApp.createSSLContext();
+            //HttpsServer httpServer = HttpsServer.create(new InetSocketAddress(MyApp.APP_PORT), 0);
+            //httpServer.setHttpsConfigurator(new HttpsConfigurator(context));
+
             HttpServer httpServer = HttpServer.create(new InetSocketAddress(MyApp.APP_PORT), 0);
 
             JavaHttpServerBridge.attach(httpServer, app);
@@ -82,6 +96,38 @@ public class MyApp
             httpServer.start();
         } catch (IOException e) {
             System.err.println("Could not create HTTP server: " + e.getMessage());
+        }
+    }
+
+    // To generate a dummy keystore, use:
+    // keytool -genkeypair -keyalg RSA -alias selfsigned -keystore testkey.jks
+    // -storepass password -validity 360 -keysize 2048
+    private static SSLContext createSSLContext()
+    {
+        try {
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+
+            // initialise the keystore
+            char[] password = "password".toCharArray();
+            KeyStore ks = KeyStore.getInstance("JKS");
+            FileInputStream fis = new FileInputStream("testkey.jks");
+
+            ks.load(fis, password);
+
+            // setup the key manager factory
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, password);
+
+            // setup the trust manager factory
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ks);
+
+            // setup the HTTPS context and parameters
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+            return sslContext;
+        } catch (Exception e) {
+            throw new RuntimeException("Could not create SSL context", e);
         }
     }
 }

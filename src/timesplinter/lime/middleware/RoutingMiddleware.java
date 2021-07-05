@@ -23,7 +23,7 @@ public class RoutingMiddleware implements MiddlewareInterface
     public ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws IOException
     {
         try {
-            CompiledRouteInterface route = this.router.match(request.getMethod(), request.getPath());
+            CompiledRouteInterface route = this.router.match(request.getMethod(), request.getUri().getPath());
 
             this.addRequestParametersFromRoute(request, route);
 
@@ -40,7 +40,7 @@ public class RoutingMiddleware implements MiddlewareInterface
 
     private void addRequestParametersFromRoute(RequestInterface request, CompiledRouteInterface route)
     {
-        Matcher matcher = route.getCompiledPattern().matcher(request.getPath());
+        Matcher matcher = route.getCompiledPattern().matcher(request.getUri().getPath());
 
         if (!matcher.find()) {
             return;

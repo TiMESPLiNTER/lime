@@ -33,6 +33,8 @@ public class TestController implements RequestHandlerInterface
 
         responseBody.write("hello world. Param1: " + param1 + "\n\n");
 
+        responseBody.write("Request URL: " + request.getUri().toString() + "\n\n");
+
         for (var header : request.getHeaders().entrySet()) {
             responseBody.write(
                 "Header '" + header.getKey() + "', values: '" + String.join("', '", header.getValue()) + "'\n"

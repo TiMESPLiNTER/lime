@@ -44,6 +44,7 @@ public class MyApp
 
             JavaHttpServerBridge.attach(httpServer, app);
 
+            httpServer.setExecutor(null);
             httpServer.start();
         } catch (IOException e) {
             System.err.println("Could not create HTTP server: " + e.getMessage());
@@ -87,7 +88,7 @@ Route matching is case-insensitive.
 app.group("/user", routeCollector -> {
     routeCollector.get("", request -> { /* ... */ });
     routeCollector.post("", request -> { /* ... */ });
-    routeCollector.get("{id: \\d+}", request -> { /* ... */ });
+    routeCollector.get("/{id: \\d+}", request -> { /* ... */ });
 }).add(new MyMiddleware());
 ```
 

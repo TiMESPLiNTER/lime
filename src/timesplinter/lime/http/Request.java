@@ -1,6 +1,7 @@
 package timesplinter.lime.http;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 final public class Request implements RequestInterface
@@ -11,10 +12,13 @@ final public class Request implements RequestInterface
 
     final private Map<String, Object> parameters = new HashMap<>();
 
-    public Request(String method, String path)
+    final private Map<String, List<String>> headers;
+
+    public Request(String method, String path, Map<String, List<String>> headers)
     {
         this.method = method;
         this.path = path;
+        this.headers = headers;
     }
 
     public String getMethod()
@@ -35,5 +39,17 @@ final public class Request implements RequestInterface
     public void setAttribute(String name, Object value)
     {
         this.parameters.put(name, value);
+    }
+
+    @Override
+    public Map<String, List<String>> getHeaders()
+    {
+        return this.headers;
+    }
+
+    @Override
+    public List<String> getHeader(String name)
+    {
+        return this.headers.get(name);
     }
 }

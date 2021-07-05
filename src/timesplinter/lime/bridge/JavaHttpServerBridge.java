@@ -8,6 +8,8 @@ import timesplinter.lime.http.Request;
 import timesplinter.lime.http.RequestInterface;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class JavaHttpServerBridge implements HttpHandler
 {
@@ -23,7 +25,6 @@ public class JavaHttpServerBridge implements HttpHandler
     {
         var bridge = new JavaHttpServerBridge(app);
         httpServer.createContext("/", bridge);
-        httpServer.setExecutor(null); // creates a default executor (Executors.newFixedThreadPool(5))
     }
 
     @Override
@@ -49,6 +50,6 @@ public class JavaHttpServerBridge implements HttpHandler
         String requestMethod = exchange.getRequestMethod();
         String requestPath = exchange.getRequestURI().getPath();
 
-        return new Request(requestMethod, requestPath);
+        return new Request(requestMethod, requestPath, Map.copyOf(exchange.getRequestHeaders()));
     }
 }

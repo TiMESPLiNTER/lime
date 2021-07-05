@@ -1,13 +1,24 @@
 package timesplinter.lime.container;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Container
+final public class Container
 {
-    private Map<String, Object> definitions = new HashMap<>();
+    final private Map<String, Object> definitions;
 
-    public void set(String serviceId, ServiceDefinition serviceDefinition)
+    public Container(Map<String, Object> values)
+    {
+        this.definitions = values;
+    }
+
+    public Container()
+    {
+        this(new HashMap<>());
+    }
+
+    public void set(String serviceId, ServiceDefinitionInterface serviceDefinition)
     {
         this.definitions.put(serviceId, serviceDefinition);
     }
@@ -16,22 +27,39 @@ public class Container
     {
         Object definition = this.definitions.get(serviceId);
 
-        if (definition instanceof ServiceDefinition) {
-            this.definitions.put(serviceId, ((ServiceDefinition) definition).define(this));
+        if (definition instanceof ServiceDefinitionInterface) {
+            this.definitions.put(serviceId, ((ServiceDefinitionInterface) definition).define());
         }
 
         return this.definitions.get(serviceId);
     }
 
-    public ServiceDefinition protect(ServiceDefinition definition)
+    public ServiceDefinitionInterface protect(ServiceDefinitionInterface definition)
     {
-        return (c) -> definition;
+        return () -> definition;
     }
 
-    public Container register(ServiceProvider serviceProvider)
+    public void extend(String serviceId, ExtendServiceDefinitionInterface serviceDefinition)
+    {
+        var prevServiceDefinition = (ServiceDefinitionInterface) this.definitions.get(serviceId);
+
+        this.set(serviceId, () -> serviceDefinition.define(prevServiceDefinition.define()));
+    }
+
+    public Container register(ServiceProviderInterface serviceProvider)
     {
         serviceProvider.register(this);
 
         return this;
+    }
+
+    public void precompile()
+    {
+        this.precompile(this.definitions.keySet().stream().toList());
+    }
+
+    public void precompile(List<String> serviceIds)
+    {
+        serviceIds.forEach(this::get);
     }
 }

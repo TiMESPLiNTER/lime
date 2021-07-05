@@ -91,11 +91,13 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
         return this.routeCollectorProxy.put(pattern, handler);
     }
 
+    @Override
     public RouteInterface patch(String path, RequestHandlerInterface handler)
     {
         return this.routeCollectorProxy.patch(path, handler);
     }
 
+    @Override
     public RouteInterface delete(String path, RequestHandlerInterface handler)
     {
         return this.routeCollectorProxy.delete(path, handler);
@@ -113,6 +115,7 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
         return this.routeCollectorProxy.any(pattern, handler);
     }
 
+    @Override
     public RouteGroupInterface group(String path, RouteGroupCallableInterface group)
     {
         return this.routeCollectorProxy.group(path, group);

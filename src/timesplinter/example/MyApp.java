@@ -2,17 +2,16 @@ package timesplinter.example;
 
 import com.sun.net.httpserver.HttpServer;
 import timesplinter.example.controller.TestController;
+import timesplinter.example.serviceProvider.ControllerServiceProvider;
+import timesplinter.example.serviceProvider.HttpServiceProvider;
 import timesplinter.lime.App;
 import timesplinter.lime.LazyRequestHandlerFactory;
 import timesplinter.lime.bridge.JavaHttpServerBridge;
 import timesplinter.lime.container.Container;
-import timesplinter.lime.http.ResponseFactory;
 import timesplinter.lime.http.ResponseFactoryInterface;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class MyApp
 {
@@ -20,25 +19,17 @@ public class MyApp
 
     public static void main(String[] args)
     {
-        Container container = new Container();
-        container.set("foo", c -> "bar");
-        container.set("baz", c -> {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime now = LocalDateTime.now();
+        var container = new Container();
 
-            return c.get("foo") + ", " + dtf.format(now);
-        });
-        container.set(TestController.class.getName(), c -> new TestController(
-           (ResponseFactoryInterface) c.get(ResponseFactoryInterface.class.getName()),
-           (String) c.get("baz")
-        ));
-        container.set(ResponseFactoryInterface.class.getName(), c -> new ResponseFactory());
+        container
+            .register(new ControllerServiceProvider())
+            .register(new HttpServiceProvider())
+        ;
 
         var responseFactory = (ResponseFactoryInterface) container.get(ResponseFactoryInterface.class.getName());
-
         var lazyRequestHandlerFactory = new LazyRequestHandlerFactory(container);
         
-        App app = new App(container);
+        var app = new App(container);
 
         app.addDefaultRoutingMiddleware();
         app.add((request, next) -> {
@@ -87,6 +78,7 @@ public class MyApp
 
             JavaHttpServerBridge.attach(httpServer, app);
 
+            httpServer.setExecutor(null); // creates a default executor (Executors.newFixedThreadPool(5))
             httpServer.start();
         } catch (IOException e) {
             System.err.println("Could not create HTTP server: " + e.getMessage());

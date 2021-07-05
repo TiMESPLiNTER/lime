@@ -1,6 +1,6 @@
 package timesplinter.lime.container;
 
-public interface ServiceProvider
+public interface ServiceProviderInterface
 {
     void register(Container container);
 }

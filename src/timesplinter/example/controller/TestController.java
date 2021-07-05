@@ -6,19 +6,18 @@ import timesplinter.lime.http.ResponseInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class TestController implements RequestHandlerInterface
 {
     final private ResponseFactoryInterface responseFactory;
 
-    final private String containerBazValue;
-
-    public TestController(ResponseFactoryInterface responseFactory, String containerBazValue)
+    public TestController(ResponseFactoryInterface responseFactory)
     {
         System.out.println("Hello, I'm a lazy controller");
 
         this.responseFactory = responseFactory;
-        this.containerBazValue = containerBazValue;
     }
 
     @Override
@@ -29,8 +28,16 @@ public class TestController implements RequestHandlerInterface
         var response = this.responseFactory.create();
 
         response.setStatusCode(200).setHeader("Content-Type", "text/plain");
-        response.getBody().write("hello world. Param1: " + param1 + "\n");
-        response.getBody().write("Something from the container: " + this.containerBazValue);
+
+        var responseBody =  response.getBody();
+
+        responseBody.write("hello world. Param1: " + param1 + "\n\n");
+
+        for (var header : request.getHeaders().entrySet()) {
+            responseBody.write(
+                "Header '" + header.getKey() + "', values: '" + String.join("', '", header.getValue()) + "'\n"
+            );
+        }
 
         return response;
     }

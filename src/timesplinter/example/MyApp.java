@@ -1,8 +1,6 @@
 package timesplinter.example;
 
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.HttpsConfigurator;
-import com.sun.net.httpserver.HttpsServer;
 import timesplinter.example.controller.TestController;
 import timesplinter.example.serviceProvider.ControllerServiceProvider;
 import timesplinter.example.serviceProvider.HttpServiceProvider;
@@ -16,12 +14,9 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 
 public class MyApp
 {
@@ -52,6 +47,7 @@ public class MyApp
 
             return next.handle(request);
         });
+        app.addDefaultErrorMiddleware(true);
 
         app.get("/test/{id:\\d+}", request -> {
             int id = Integer.parseInt((String) request.getAttribute("id"));

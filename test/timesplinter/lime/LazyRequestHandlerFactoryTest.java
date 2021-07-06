@@ -1,4 +1,4 @@
-package lime;
+package timesplinter.lime;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

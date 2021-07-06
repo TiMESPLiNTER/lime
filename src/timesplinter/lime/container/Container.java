@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final public class Container
+public class Container
 {
     final private Map<String, Object> definitions;
 
@@ -32,6 +32,11 @@ final public class Container
         }
 
         return this.definitions.get(serviceId);
+    }
+
+    public boolean has(String serviceId)
+    {
+        return this.definitions.containsKey(serviceId);
     }
 
     public ServiceDefinitionInterface protect(ServiceDefinitionInterface definition)

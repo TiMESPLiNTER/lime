@@ -5,8 +5,6 @@ import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
 
-import java.io.IOException;
-
 public class LazyRequestHandler implements RequestHandlerInterface
 {
     final private String serviceId;
@@ -20,7 +18,7 @@ public class LazyRequestHandler implements RequestHandlerInterface
     }
 
     @Override
-    public ResponseInterface handle(RequestInterface request) throws IOException
+    public ResponseInterface handle(RequestInterface request) throws Exception
     {
         return ((RequestHandlerInterface) container.get(this.serviceId)).handle(request);
     }

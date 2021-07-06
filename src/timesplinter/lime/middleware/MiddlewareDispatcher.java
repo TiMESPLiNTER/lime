@@ -6,8 +6,6 @@ import timesplinter.lime.router.CompiledRouteInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
 import timesplinter.lime.router.RouteContext;
 
-import java.io.IOException;
-
 public class MiddlewareDispatcher implements RequestHandlerInterface
 {
     private RequestHandlerInterface tip;
@@ -30,10 +28,11 @@ public class MiddlewareDispatcher implements RequestHandlerInterface
     {
         RequestHandlerInterface prev = this.tip;
 
+
         this.tip = request -> middleware.process(request, prev);
     }
 
-    public ResponseInterface handle(RequestInterface request) throws IOException
+    public ResponseInterface handle(RequestInterface request) throws Exception
     {
         return this.tip.handle(request);
     }

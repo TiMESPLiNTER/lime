@@ -4,9 +4,8 @@ import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
 
-import java.io.IOException;
-
+@FunctionalInterface
 public interface MiddlewareInterface
 {
-    ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws IOException;
+    ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws Exception;
 }

@@ -1,19 +1,16 @@
-package lime;
+package timesplinter.lime;
 
 import org.junit.jupiter.api.Test;
-import timesplinter.lime.LazyRequestHandler;
 import timesplinter.lime.container.Container;
 import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.router.RequestHandlerInterface;
-
-import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
 public class LazyRequestHandlerTest
 {
     @Test
-    public void testThatItCallsContainerWithServiceIdAndExecutesRequestHandler() throws IOException
+    public void testThatItCallsContainerWithServiceIdAndExecutesRequestHandler() throws Exception
     {
         String serviceId = "myServiceId";
 

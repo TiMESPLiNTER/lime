@@ -3,6 +3,8 @@ package timesplinter.lime.middleware;
 import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseFactoryInterface;
 import timesplinter.lime.http.ResponseInterface;
+import timesplinter.lime.http.exception.HttpMethodNotAllowedException;
+import timesplinter.lime.http.exception.HttpNotFoundException;
 import timesplinter.lime.router.*;
 
 import java.io.IOException;
@@ -20,7 +22,7 @@ public class RoutingMiddleware implements MiddlewareInterface
         this.responseFactory = responseFactory;
     }
 
-    public ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws IOException
+    public ResponseInterface process(RequestInterface request, RequestHandlerInterface next) throws Exception
     {
         try {
             CompiledRouteInterface route = this.router.match(request.getMethod(), request.getUri().getPath());
@@ -30,11 +32,10 @@ public class RoutingMiddleware implements MiddlewareInterface
             request.setAttribute(RouteContext.ROUTE, route);
 
             return route.getMiddlewareDispatcher(next).handle(request);
-        } catch (NotFoundRoutingException|MethodNotAllowedRoutingException e) {
-            ResponseInterface response = this.responseFactory.create();
-            response.setStatusCode(e instanceof NotFoundRoutingException ? 404 : 405);
-
-            return response;
+        } catch (NotFoundRoutingException e) {
+            throw new HttpNotFoundException(request);
+        } catch (MethodNotAllowedRoutingException e) {
+            throw new HttpMethodNotAllowedException(request);
         }
     }
 

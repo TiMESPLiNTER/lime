@@ -3,7 +3,9 @@ package timesplinter.lime;
 import timesplinter.lime.container.Container;
 import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseFactory;
+import timesplinter.lime.http.ResponseFactoryInterface;
 import timesplinter.lime.http.ResponseInterface;
+import timesplinter.lime.middleware.ErrorMiddleware;
 import timesplinter.lime.middleware.MiddlewareInterface;
 import timesplinter.lime.middleware.MiddlewareDispatcher;
 import timesplinter.lime.middleware.RoutingMiddleware;
@@ -17,13 +19,16 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
 
     final private MiddlewareDispatcher middlewareStack;
 
+    final private ResponseFactoryInterface responseFactory;
+
     public App(Container container)
     {
         this.middlewareStack = new MiddlewareDispatcher();
         this.routeCollectorProxy = new RouteCollectorProxy();
+        this.responseFactory = this.getResponseFactory(container);
     }
 
-    public ResponseInterface handle(RequestInterface request) throws IOException
+    public ResponseInterface handle(RequestInterface request) throws Exception
     {
         return this.middlewareStack.handle(request);
     }
@@ -42,11 +47,22 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
         return this;
     }
     
-    public App addDefaultRoutingMiddleware()
+    public RoutingMiddleware addDefaultRoutingMiddleware()
     {
-        this.add(new RoutingMiddleware(new Router(this.getRouteCollector()), new ResponseFactory()));
+        var routingMiddleware = new RoutingMiddleware(new Router(this.getRouteCollector()), this.responseFactory);
+
+        this.add(routingMiddleware);
         
-        return this;
+        return routingMiddleware;
+    }
+
+    public ErrorMiddleware addDefaultErrorMiddleware(boolean displayErrorDetails)
+    {
+        var errorMiddleware = new ErrorMiddleware(this.responseFactory, displayErrorDetails);
+
+        this.add(errorMiddleware);
+
+        return errorMiddleware;
     }
 
     @Override
@@ -119,5 +135,16 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
     public RouteGroupInterface group(String path, RouteGroupCallableInterface group)
     {
         return this.routeCollectorProxy.group(path, group);
+    }
+
+    private ResponseFactoryInterface getResponseFactory(Container container)
+    {
+        String responseFactoryServiceId = ResponseFactoryInterface.class.getName();
+
+        if (container.has(responseFactoryServiceId)) {
+            return new ResponseFactory();
+        }
+
+        return (ResponseFactoryInterface) container.get(responseFactoryServiceId);
     }
 }

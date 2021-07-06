@@ -13,21 +13,29 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 final public class JavaHttpServerBridge implements HttpHandler
 {
     final private App app;
 
-    public JavaHttpServerBridge(App app)
+    final private Consumer<Throwable> exceptionHandler;
+
+    public JavaHttpServerBridge(App app, Consumer<Throwable> exceptionHandler)
     {
         this.app = app;
-
+        this.exceptionHandler = exceptionHandler;
     }
 
+    public static void attach(HttpServer httpServer, App app, Consumer<Throwable> exceptionHandler)
+    {
+        var bridge = new JavaHttpServerBridge(app, exceptionHandler);
+        httpServer.createContext("/", bridge);
+    }
+    
     public static void attach(HttpServer httpServer, App app)
     {
-        var bridge = new JavaHttpServerBridge(app);
-        httpServer.createContext("/", bridge);
+        attach(httpServer, app, Throwable::printStackTrace);
     }
 
     @Override
@@ -47,8 +55,12 @@ final public class JavaHttpServerBridge implements HttpHandler
 
             responseStream.close();
             exchange.getResponseBody().close();
-        } catch (URISyntaxException e) {
-            System.err.println(e.getMessage());
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            if (null != this.exceptionHandler) {
+                this.exceptionHandler.accept(e);
+            }
         }
     }
 

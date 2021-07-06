@@ -8,5 +8,5 @@ import java.io.IOException;
 @FunctionalInterface
 public interface RequestHandlerInterface
 {
-    ResponseInterface handle(RequestInterface request) throws IOException;
+    ResponseInterface handle(RequestInterface request) throws Exception;
 }

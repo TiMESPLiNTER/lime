@@ -125,3 +125,15 @@ This defines three routes:
 and adds `MyMiddleware` to all three of them.
 
 As you can see, groups can also have middlewares appended which only affect that very group.
+
+## Build
+```bash
+$ gradle build
+```
+
+This will produce two jars (`lime-x.y.z.jar` and `lime-x.y.z-sources.jar`) in `./build/libs`.
+
+## Test
+```bash
+$ gradle test
+```

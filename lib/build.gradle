@@ -5,6 +5,7 @@ plugins {
 }
 
 version '0.1.0'
+buildDir = '../build'
 archivesBaseName = 'lime'
 
 repositories {
@@ -35,9 +36,9 @@ jacocoTestReport {
     dependsOn test
 
     reports {
-        xml.required = true
+        xml.outputLocation = layout.buildDirectory.dir('reports/coverage/xml')
         csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('coverage-html')
+        html.outputLocation = layout.buildDirectory.dir('reports/coverage/html')
     }
 }
 

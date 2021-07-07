@@ -1,5 +1,6 @@
 package timesplinter.lime.http;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -16,4 +17,6 @@ public interface RequestInterface
     Map<String, List<String>> getHeaders();
 
     List<String> getHeader(String name);
+
+    InputStream getBody();
 }

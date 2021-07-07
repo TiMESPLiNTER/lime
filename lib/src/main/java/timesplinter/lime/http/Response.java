@@ -36,11 +36,6 @@ public class Response implements ResponseInterface
         return this.responseCode;
     }
 
-    public int getResponseCode()
-    {
-        return responseCode;
-    }
-
     public ResponseInterface setHeader(String name, String value)
     {
         this.headers.put(name, Collections.singletonList(value));

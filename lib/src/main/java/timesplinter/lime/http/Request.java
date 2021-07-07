@@ -1,5 +1,6 @@
 package timesplinter.lime.http;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,14 @@ final public class Request implements RequestInterface
 
     final private Map<String, List<String>> headers;
 
-    public Request(String method, UriInterface uri, Map<String, List<String>> headers)
+    final private InputStream body;
+
+    public Request(String method, UriInterface uri, Map<String, List<String>> headers, InputStream body)
     {
         this.method = method;
         this.uri = uri;
         this.headers = headers;
+        this.body = body;
     }
 
     public String getMethod()
@@ -51,5 +55,9 @@ final public class Request implements RequestInterface
     public List<String> getHeader(String name)
     {
         return this.headers.get(name);
+    }
+
+    public InputStream getBody() {
+        return this.body;
     }
 }

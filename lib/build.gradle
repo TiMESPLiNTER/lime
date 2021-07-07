@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 version '0.1.0'
@@ -27,6 +28,17 @@ sourceSets {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('coverage-html')
+    }
 }
 
 checkstyle {

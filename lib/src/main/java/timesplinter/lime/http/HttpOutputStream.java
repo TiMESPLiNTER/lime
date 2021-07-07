@@ -4,16 +4,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-final public class HttpOutputStream extends ByteArrayOutputStream implements HttpOutputStreamInterface
+final public class HttpOutputStream implements HttpOutputStreamInterface
 {
+    final private ByteArrayOutputStream outputStream;
+
+    public HttpOutputStream(ByteArrayOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
     public void write(String str) throws IOException
     {
-        this.write(str.getBytes());
+        this.outputStream.write(str.getBytes());
     }
 
     public long transferTo(OutputStream out) throws IOException
     {
-        byte[] bytes = super.toByteArray();
+        byte[] bytes = this.outputStream.toByteArray();
 
         out.write(bytes);
         
@@ -22,6 +28,10 @@ final public class HttpOutputStream extends ByteArrayOutputStream implements Htt
 
     public long available()
     {
-        return super.size();
+        return this.outputStream.size();
+    }
+
+    public void close() throws IOException {
+        this.outputStream.close();
     }
 }

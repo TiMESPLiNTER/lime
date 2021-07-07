@@ -5,11 +5,11 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpsServer;
 import timesplinter.lime.App;
+import timesplinter.lime.http.HttpInputStream;
 import timesplinter.lime.http.Request;
 import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.Uri;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -40,7 +40,7 @@ final public class JavaHttpServerBridge implements HttpHandler
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException
+    public void handle(HttpExchange exchange)
     {
         try {
             var request = this.createRequest(exchange);
@@ -56,8 +56,6 @@ final public class JavaHttpServerBridge implements HttpHandler
 
             responseStream.close();
             exchange.getResponseBody().close();
-        } catch (IOException e) {
-            throw e;
         } catch (Exception e) {
             if (null != this.exceptionHandler) {
                 this.exceptionHandler.accept(e);
@@ -70,7 +68,8 @@ final public class JavaHttpServerBridge implements HttpHandler
         return new Request(
             exchange.getRequestMethod(),
             new Uri(this.createURI(exchange)),
-            Map.copyOf(exchange.getRequestHeaders())
+            Map.copyOf(exchange.getRequestHeaders()),
+            new HttpInputStream(exchange.getRequestBody())
         );
     }
 

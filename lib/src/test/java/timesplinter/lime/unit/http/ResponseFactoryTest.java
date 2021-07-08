@@ -1,7 +1,9 @@
-package timesplinter.lime.http;
+package timesplinter.lime.unit.http;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import timesplinter.lime.http.ResponseFactory;
+import timesplinter.lime.http.ResponseInterface;
 
 public class ResponseFactoryTest {
     @Test

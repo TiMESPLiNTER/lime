@@ -29,14 +29,14 @@ public class ErrorMiddleware implements MiddlewareInterface
             return next.handle(request);
         } catch (Throwable e) {
             var response = this.responseFactory.create();
-            var responseBody = response.getBody();
-            var errorMessage = this.displayErrorDetails ? this.getTraceAsString(e) : "Internal server error";
             var statusCode = e instanceof HttpException ? ((HttpException) e).getStatusCode() : 500;
 
-            response.setStatusCode(statusCode).setHeader("Content-Type", "text/plain");
-            responseBody.write(errorMessage);
+            if (this.displayErrorDetails) {
+                response.setHeader("Content-Type", "text/plain");
+                response.getBody().write(this.getTraceAsString(e));
+            }
 
-            return response;
+            return response.setStatusCode(statusCode);
         }
     }
 

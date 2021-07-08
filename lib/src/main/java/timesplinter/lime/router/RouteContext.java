@@ -1,6 +1,6 @@
 package timesplinter.lime.router;
 
-public class RouteContext
+public final class RouteContext
 {
     final public static String ROUTE = "__route__";
 }

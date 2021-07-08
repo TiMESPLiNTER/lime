@@ -30,6 +30,7 @@ public class RoutingMiddleware implements MiddlewareInterface
             this.addRequestParametersFromRoute(request, route);
 
             request.setAttribute(RouteContext.ROUTE, route);
+            request.setAttribute(RequestHandlerContext.REQUEST_HANDLER, route.getRouteDefinition().getHandler());
 
             return route.getMiddlewareDispatcher(next).handle(request);
         } catch (NotFoundRoutingException e) {

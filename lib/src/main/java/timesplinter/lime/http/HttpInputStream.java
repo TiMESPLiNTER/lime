@@ -14,6 +14,11 @@ public class HttpInputStream extends InputStream {
         return this.inputStream.read();
     }
 
+    @Override
+    public int available() throws IOException {
+        return this.inputStream.available();
+    }
+
     public String toString() {
         try {
             return new String(this.inputStream.readAllBytes());

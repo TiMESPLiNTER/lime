@@ -1,8 +1,11 @@
-package timesplinter.lime.container;
+package timesplinter.lime.unit.container;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import timesplinter.lime.container.Container;
+import timesplinter.lime.container.ServiceDefinitionInterface;
+import timesplinter.lime.container.ServiceProviderInterface;
 
 public class ContainerTest {
     @Test

@@ -1,8 +1,9 @@
-package timesplinter.lime.http;
+package timesplinter.lime.unit.http;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import timesplinter.lime.http.Uri;
 
 import java.net.URI;
 

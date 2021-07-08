@@ -5,9 +5,10 @@ import timesplinter.lime.http.RequestInterface;
 import timesplinter.lime.http.ResponseFactory;
 import timesplinter.lime.http.ResponseFactoryInterface;
 import timesplinter.lime.http.ResponseInterface;
+import timesplinter.lime.middleware.DefaultRequestHandler;
 import timesplinter.lime.middleware.ErrorMiddleware;
-import timesplinter.lime.middleware.MiddlewareInterface;
 import timesplinter.lime.middleware.MiddlewareDispatcher;
+import timesplinter.lime.middleware.MiddlewareInterface;
 import timesplinter.lime.middleware.RoutingMiddleware;
 import timesplinter.lime.router.RequestHandlerInterface;
 import timesplinter.lime.router.RouteCollectorInterface;
@@ -28,7 +29,7 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
 
     public App(Container container)
     {
-        this.middlewareStack = new MiddlewareDispatcher();
+        this.middlewareStack = this.getMiddlewareDispatcher(container);
         this.routeCollectorProxy = new RouteCollectorProxy();
         this.responseFactory = this.getResponseFactory(container);
     }
@@ -142,11 +143,22 @@ public class App implements RequestHandlerInterface, RouteCollectorProxyInterfac
         return this.routeCollectorProxy.group(path, group);
     }
 
+    private MiddlewareDispatcher getMiddlewareDispatcher(Container container)
+    {
+        String middlewareDispatcherServiceId = MiddlewareDispatcher.class.getName();
+
+        if (!container.has(middlewareDispatcherServiceId)) {
+            return new MiddlewareDispatcher(new DefaultRequestHandler());
+        }
+
+        return (MiddlewareDispatcher) container.get(middlewareDispatcherServiceId);
+    }
+
     private ResponseFactoryInterface getResponseFactory(Container container)
     {
         String responseFactoryServiceId = ResponseFactoryInterface.class.getName();
 
-        if (container.has(responseFactoryServiceId)) {
+        if (!container.has(responseFactoryServiceId)) {
             return new ResponseFactory();
         }
 

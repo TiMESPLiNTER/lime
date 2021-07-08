@@ -1,4 +1,4 @@
 jdk:
   - openjdk11
 install:
-  - gradle build
+  - ./gradlew build

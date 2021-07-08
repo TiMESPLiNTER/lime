@@ -2,11 +2,13 @@ plugins {
     id 'java-library'
     id 'checkstyle'
     id 'jacoco'
+    id 'maven'
 }
 
 version '0.1.0'
 buildDir = '../build'
 archivesBaseName = 'lime'
+group = 'com.github.timesplinter'
 
 repositories {
     mavenCentral()

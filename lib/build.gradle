@@ -34,7 +34,7 @@ test {
     finalizedBy jacocoTestReport
 }
 
-jacocoTestReport {
+/*jacocoTestReport {
     dependsOn test
 
     reports {
@@ -42,7 +42,7 @@ jacocoTestReport {
         csv.required = false
         html.required = true
     }
-}
+}*/
 
 checkstyle {
     configFile = rootProject.file('./checkstyle.xml')

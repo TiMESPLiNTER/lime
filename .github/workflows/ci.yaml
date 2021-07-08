@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         java: [ '8', '11', '13', '16' ]
-      name: Java ${{ matrix.Java }}
+    name: Java ${{ matrix.Java }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16

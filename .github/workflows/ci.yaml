@@ -10,7 +10,6 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 16
@@ -21,6 +20,8 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
       - name: Code style
-        run: ./gradlew checkstyleMain && ./gradlew checkstyleTest
+        run: |
+          ./gradlew checkstyleMain
+          ./gradlew checkstyleTest
       - name: Tests
         run: ./gradlew test

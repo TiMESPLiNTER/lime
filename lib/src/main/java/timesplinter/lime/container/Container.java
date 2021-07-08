@@ -1,8 +1,10 @@
 package timesplinter.lime.container;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Container
 {
@@ -60,7 +62,7 @@ public class Container
 
     public void precompile()
     {
-        this.precompile(this.definitions.keySet().stream().toList());
+        this.precompile(new ArrayList<>(this.definitions.keySet()));
     }
 
     public void precompile(List<String> serviceIds)

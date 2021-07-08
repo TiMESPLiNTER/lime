@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
     id 'java-library'
     id 'checkstyle'
     id 'jacoco'
@@ -54,7 +53,7 @@ java {
 }
 
 subprojects {
-    plugins.withId('java-library') {
+    project.afterEvaluate {
         publishing {
             publications {
                 release(MavenPublication) {

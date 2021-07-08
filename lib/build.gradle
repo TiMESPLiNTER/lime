@@ -52,11 +52,13 @@ java {
     withSourcesJar()
 }
 
-project.afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
+subprojects {
+    plugins.withId('java-library') {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    from components.release
+                }
             }
         }
     }

@@ -47,32 +47,6 @@ public class Router implements RouterInterface
         String requestMethod,
         String requestPath
     ) throws NotFoundRoutingException, MethodNotAllowedRoutingException {
-        /*List<CompiledRouteInterface> routes = this.routeCollector.getRoutes().entrySet().stream()
-            .map(e -> {
-                String routeId = e.getKey();
-                CompiledRouteInterface r;
-
-                if (!this.compiledRouteCache.containsKey(routeId)) {
-                    r = this.compileRoute(e.getValue());
-                    this.compiledRouteCache.put(routeId, r);
-                } else {
-                    r = this.compiledRouteCache.get(routeId);
-                }
-
-                return r;
-            })
-            .filter(e -> e.getCompiledPattern().matcher(requestPath).matches())
-            .collect(Collectors.toList());
-
-        if (routes.size() == 0) {
-            throw new NotFoundRoutingException();
-        }
-
-        CompiledRouteInterface r = routes.stream()
-            .filter(e -> Arrays.asList(e.getRouteDefinition().getMethods()).contains(requestMethod))
-            .findFirst()
-            .orElseThrow(MethodNotAllowedRoutingException::new);*/
-
         boolean foundPath = false;
 
         for (Map.Entry<String, RouteInterface> entry : this.routeCollector.getRoutes().entrySet()) {

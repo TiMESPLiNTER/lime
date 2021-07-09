@@ -1,10 +1,11 @@
 package timesplinter.lime.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class HttpInputStream extends InputStream {
-    final private InputStream inputStream;
+    private InputStream inputStream;
 
     public HttpInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
@@ -21,7 +22,11 @@ public class HttpInputStream extends InputStream {
 
     public String toString() {
         try {
-            return new String(this.inputStream.readAllBytes());
+            var content = this.inputStream.readAllBytes();
+
+            this.inputStream = new ByteArrayInputStream(content);
+
+            return new String(content);
         } catch (IOException e) {
             return null;
         }

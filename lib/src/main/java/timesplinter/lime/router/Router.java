@@ -63,13 +63,10 @@ public class Router implements RouterInterface
             })
             .filter(route -> Arrays.asList(route.getRouteDefinition().getMethods()).contains(requestMethod))
             .findFirst()
-            .orElseThrow(() -> {
-                if (!foundPath.get()) {
-                    return new NotFoundRoutingException();
-                } else {
-                    return new MethodNotAllowedRoutingException();
-                }
-            });
+            .orElseThrow(() -> !foundPath.get()
+                ? new NotFoundRoutingException()
+                : new MethodNotAllowedRoutingException()
+            );
     }
 
     private CompiledRouteInterface getCachedRoute(RouteInterface route) {

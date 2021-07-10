@@ -1,6 +1,9 @@
 package timesplinter.lime.http;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class HttpInputStream extends FilterInputStream implements HttpInputStreamInterface {
     public HttpInputStream(InputStream in) {

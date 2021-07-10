@@ -7,7 +7,6 @@ import timesplinter.lime.http.HttpInputStreamInterface;
 import timesplinter.lime.http.Request;
 import timesplinter.lime.http.UriInterface;
 
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

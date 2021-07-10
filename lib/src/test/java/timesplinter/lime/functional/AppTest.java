@@ -5,11 +5,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import timesplinter.lime.App;
 import timesplinter.lime.container.Container;
-import timesplinter.lime.http.*;
+import timesplinter.lime.http.HttpInputStreamInterface;
+import timesplinter.lime.http.Request;
+import timesplinter.lime.http.ResponseFactory;
+import timesplinter.lime.http.ResponseInterface;
+import timesplinter.lime.http.UriInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 
 public class AppTest {

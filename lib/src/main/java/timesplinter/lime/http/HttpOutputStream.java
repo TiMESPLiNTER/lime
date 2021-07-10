@@ -1,37 +1,30 @@
 package timesplinter.lime.http;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-final public class HttpOutputStream implements HttpOutputStreamInterface
+final public class HttpOutputStream extends FilterOutputStream implements HttpOutputStreamInterface
 {
-    final private ByteArrayOutputStream outputStream;
-
-    public HttpOutputStream(ByteArrayOutputStream outputStream) {
-        this.outputStream = outputStream;
+    public HttpOutputStream(ByteArrayOutputStream out) {
+        super(out);
     }
 
     public void write(String str) throws IOException
     {
-        this.outputStream.write(str.getBytes());
+        this.out.write(str.getBytes());
     }
 
     public long transferTo(OutputStream out) throws IOException
     {
-        byte[] bytes = this.outputStream.toByteArray();
-
-        out.write(bytes);
+        ((ByteArrayOutputStream) this.out).writeTo(out);
         
-        return bytes.length;
+        return this.available();
     }
 
     public long available()
     {
-        return this.outputStream.size();
-    }
-
-    public void close() throws IOException {
-        this.outputStream.close();
+        return ((ByteArrayOutputStream) this.out).size();
     }
 }

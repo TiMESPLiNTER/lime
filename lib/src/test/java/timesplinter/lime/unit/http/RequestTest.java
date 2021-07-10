@@ -3,6 +3,7 @@ package timesplinter.lime.unit.http;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import timesplinter.lime.http.HttpInputStreamInterface;
 import timesplinter.lime.http.Request;
 import timesplinter.lime.http.UriInterface;
 
@@ -15,7 +16,7 @@ public class RequestTest {
     @Test
     public void testConstructorAndGetters() {
         var uri = Mockito.mock(UriInterface.class);
-        var body = Mockito.mock(InputStream.class);
+        var body = Mockito.mock(HttpInputStreamInterface.class);
         var method = "GET";
         var headers = new HashMap<String, List<String>>();
 
@@ -29,7 +30,7 @@ public class RequestTest {
     @Test
     public void testSetAndGetHeaders() {
         var uri = Mockito.mock(UriInterface.class);
-        var body = Mockito.mock(InputStream.class);
+        var body = Mockito.mock(HttpInputStreamInterface.class);
         var headerName = "Content-Type";
         var headerValue = "text/plain";
         var headers = new HashMap<String, List<String>>();
@@ -50,7 +51,7 @@ public class RequestTest {
     @Test
     public void testSetAndGetAttributes() {
         var uri = Mockito.mock(UriInterface.class);
-        var body = Mockito.mock(InputStream.class);
+        var body = Mockito.mock(HttpInputStreamInterface.class);
         var headers = new HashMap<String, List<String>>();
         var attributeName = "foo";
         var attributeValue = "bar";

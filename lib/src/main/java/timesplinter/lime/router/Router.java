@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,39 +47,40 @@ public class Router implements RouterInterface
     public CompiledRouteInterface match(
         String requestMethod,
         String requestPath
-    ) throws NotFoundRoutingException, MethodNotAllowedRoutingException {
-        boolean foundPath = false;
+    ) throws RoutingException {
+        AtomicBoolean foundPath = new AtomicBoolean(false);
 
-        for (Map.Entry<String, RouteInterface> entry : this.routeCollector.getRoutes().entrySet()) {
-            String routeId = entry.getKey();
-            CompiledRouteInterface r;
+        return this.routeCollector.getRoutes().values().stream()
+            .map(this::getCachedRoute)
+            .filter(route -> {
+                var matched = route.getCompiledPattern().matcher(requestPath).matches();
 
-            if (!this.compiledRouteCache.containsKey(routeId)) {
-                r = this.compileRoute(entry.getValue());
-                this.compiledRouteCache.put(routeId, r);
-            } else {
-                r = this.compiledRouteCache.get(routeId);
-            }
+                if (matched) {
+                    foundPath.set(true);
+                }
 
-            Matcher matcher = r.getCompiledPattern().matcher(requestPath);
+                return matched;
+            })
+            .filter(route -> Arrays.asList(route.getRouteDefinition().getMethods()).contains(requestMethod))
+            .findFirst()
+            .orElseThrow(() -> {
+                if (!foundPath.get()) {
+                    return new NotFoundRoutingException();
+                } else {
+                    return new MethodNotAllowedRoutingException();
+                }
+            });
+    }
 
-            if (!matcher.matches()) {
-                continue;
-            }
+    private CompiledRouteInterface getCachedRoute(RouteInterface route) {
+        var routeId = route.getIdentifier();
+        var compiledRoute = this.compiledRouteCache.get(routeId);;
 
-            foundPath = true;
-
-            if (Arrays.stream(r.getRouteDefinition().getMethods()).noneMatch(x -> x.equals(requestMethod))) {
-                continue;
-            }
-
-            return r;
+        if (null == compiledRoute) {
+            compiledRoute = this.compileRoute(route);
+            this.compiledRouteCache.put(routeId, compiledRoute);
         }
 
-        if (!foundPath) {
-            throw new NotFoundRoutingException();
-        } else {
-            throw new MethodNotAllowedRoutingException();
-        }
+        return compiledRoute;
     }
 }

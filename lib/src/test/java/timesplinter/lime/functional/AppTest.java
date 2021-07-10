@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import timesplinter.lime.App;
 import timesplinter.lime.container.Container;
-import timesplinter.lime.http.Request;
-import timesplinter.lime.http.ResponseFactory;
-import timesplinter.lime.http.ResponseInterface;
-import timesplinter.lime.http.UriInterface;
+import timesplinter.lime.http.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,7 +19,7 @@ public class AppTest {
         var httpPath = "/hello/world";
 
         var uriMock = Mockito.mock(UriInterface.class);
-        var inputStream = Mockito.mock(InputStream.class);
+        var inputStream = Mockito.mock(HttpInputStreamInterface.class);
 
         Mockito.when(uriMock.getPath()).thenReturn(httpPath);
 
@@ -54,7 +51,7 @@ public class AppTest {
         var httpPath = "/hello/world";
 
         var uriMock = Mockito.mock(UriInterface.class);
-        var inputStream = Mockito.mock(InputStream.class);
+        var inputStream = Mockito.mock(HttpInputStreamInterface.class);
 
         Mockito.when(uriMock.getPath()).thenReturn(httpPath);
 
@@ -83,7 +80,7 @@ public class AppTest {
         var httpPath = "/hello/world";
 
         var uriMock = Mockito.mock(UriInterface.class);
-        var inputStream = Mockito.mock(InputStream.class);
+        var inputStream = Mockito.mock(HttpInputStreamInterface.class);
 
         Mockito.when(uriMock.getPath()).thenReturn(httpPath);
 
@@ -108,7 +105,7 @@ public class AppTest {
         var httpPath = "/hello/world";
 
         var uriMock = Mockito.mock(UriInterface.class);
-        var inputStream = Mockito.mock(InputStream.class);
+        var inputStream = Mockito.mock(HttpInputStreamInterface.class);
 
         Mockito.when(uriMock.getPath()).thenReturn(httpPath);
 
@@ -131,7 +128,7 @@ public class AppTest {
         var httpPath = "/hello/world";
 
         var uriMock = Mockito.mock(UriInterface.class);
-        var inputStream = Mockito.mock(InputStream.class);
+        var inputStream = Mockito.mock(HttpInputStreamInterface.class);
 
         Mockito.when(uriMock.getPath()).thenReturn("/foo" + httpPath);
 

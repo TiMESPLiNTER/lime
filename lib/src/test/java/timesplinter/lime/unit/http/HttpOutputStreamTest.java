@@ -47,16 +47,16 @@ public class HttpOutputStreamTest {
 
     @Test
     public void testTransferToWritesBytesOfUnderlyingStreamToNewOutputStream() throws IOException {
-        var data = "hello world".getBytes();
+        var size = 42;
         var byteArrayOutputStreamMock = Mockito.mock(ByteArrayOutputStream.class);
         var newOutputStreamMock = Mockito.mock(OutputStream.class);
-
-        Mockito.when(byteArrayOutputStreamMock.toByteArray()).thenReturn(data);
-
         var httpOutputStream = new HttpOutputStream(byteArrayOutputStreamMock);
 
-        httpOutputStream.transferTo(newOutputStreamMock);
+        Mockito.when(byteArrayOutputStreamMock.size()).thenReturn(size);
 
-        Mockito.verify(newOutputStreamMock, Mockito.times(1)).write(data);
+        var actualBytesWritten = httpOutputStream.transferTo(newOutputStreamMock);
+
+        Assertions.assertEquals(size, actualBytesWritten);
+        Mockito.verify(byteArrayOutputStreamMock, Mockito.times(1)).writeTo(newOutputStreamMock);
     }
 }

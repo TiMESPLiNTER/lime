@@ -1,6 +1,7 @@
 # Lime - An HTTP micro framework for Java
 
-![CI](https://github.com/timesplinter/lime/actions/workflows/ci.yaml/badge.svg)
+![CI](https://github.com/timesplinter/lime/actions/workflows/ci.yaml/badge.svg) 
+[![JitPack](https://jitpack.io/v/timesplinter/lime.svg)](https://jitpack.io/#timesplinter/lime)
 
 Lime is heavily inspired by the popular micro framework Slim for PHP.
 

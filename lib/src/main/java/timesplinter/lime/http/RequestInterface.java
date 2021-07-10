@@ -18,5 +18,5 @@ public interface RequestInterface
 
     List<String> getHeader(String name);
 
-    InputStream getBody();
+    HttpInputStreamInterface getBody();
 }

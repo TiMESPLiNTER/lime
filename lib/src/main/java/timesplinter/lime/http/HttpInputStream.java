@@ -1,30 +1,17 @@
 package timesplinter.lime.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-public class HttpInputStream extends InputStream {
-    private InputStream inputStream;
-
-    public HttpInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public int read() throws IOException {
-        return this.inputStream.read();
-    }
-
-    @Override
-    public int available() throws IOException {
-        return this.inputStream.available();
+public class HttpInputStream extends FilterInputStream implements HttpInputStreamInterface {
+    public HttpInputStream(InputStream in) {
+        super(in);
     }
 
     public String toString() {
         try {
-            var content = this.inputStream.readAllBytes();
+            var content = this.in.readAllBytes();
 
-            this.inputStream = new ByteArrayInputStream(content);
+            this.in = new ByteArrayInputStream(content);
 
             return new String(content);
         } catch (IOException e) {
